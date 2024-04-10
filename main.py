@@ -10,10 +10,11 @@ import base64
 
 from packages.demucs import DemucsStreamer
 from packages.pretrained import get_model
+import torch
 
 buff = io.BytesIO()
 altered_audio = io.BytesIO()
-device = 'cpu'  # Use 'cuda' for GPU
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 args = argparse.Namespace(dns64=True, model_path=None, num_frames=1, num_threads=None, out=1)
 model = get_model(args).to(device)
@@ -27,20 +28,8 @@ async def audio_processor(websocket):
     first = True
     start = time.time()
     try:
-        async for packet in websocket:
-
-            json_message = json.loads(packet)
-            data = json_message["data"]
-
-            if data == "done":
-                altered_audio.close()
-                print("Finished processing audio")
-                await websocket.send("EOT")
-                break
-
-            data = base64.b64decode(data)
-            
-            buff.write(data)
+        async for packet in websocket:        
+            buff.write(packet)
 
             length = streamer.total_length if first else streamer.stride
             first = False
