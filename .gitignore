@@ -1,5 +1,5 @@
 __pycache__/
 .DS_Store
 
-client.py
-*.wav
+#client.py
+#*.wav
