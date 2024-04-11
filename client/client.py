@@ -17,7 +17,7 @@ async def stream_audio(file_path, server_uri, output_file_path):
 
     print(f"sample_width: {sample_width}, frame_rate: {frame_rate}, channels: {channels}")
 
-    chunk_length_ms = 5
+    chunk_length_ms = 20
 
     num_chunks = len(audio) // chunk_length_ms
 
